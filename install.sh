@@ -86,15 +86,33 @@ cp -f ./rar /usr/local/sbin/
 cp -f ./unrar /usr/local/sbin/
 
 ##Update SAb
-API_Key=`cat /config/sabnzbd.ini | grep ^api_key    | awk '{print $3}'`
+##Check Local Version
+API=$(cat /config/sabnzbd.ini | grep ^api_key | awk '{print $3}')
+INSTALLED=$(curl --silent http://localhost:8080/api?mode=version&output=json&apikey=${API})
 
-systemctl stop sabnzbd.service
+##Check Online Version
+DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
+CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
 
-
-
-systemctl start sabnzbd.service
+##Compare versions and update if necessary
+if [[ $CURRENT == $INSTALLED ]]; then
+  echo "Online Version matches installed version of SAB ignoring update."
+else
+  echo "Online Sab version is defferent, upgrading!"
+  systemctl stop sabnzbd.service
+  FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
+  FOLDER="SABnzbd-"$CURRENT
+  cd /tmp
+  wget -q $DOWNLOAD 
+  tar -zxf $FILE
+  cd $FOLDER
+  cp -ru ./* /opt/sabnzbd/
+  chown -R nobody:users /opt/sabnzbd
+  systemctl start sabnzbd.service
+fi
 
 ##Cleanup
+cd /
 rm -rf /tmp/*
 
 ##Update SAByenc
