@@ -108,6 +108,7 @@ else
   cd $FOLDER
   cp -ru ./* /opt/sabnzbd/
   chown -R nobody:users /opt/sabnzbd
+  pip install -q sabyenc --upgrade
   systemctl start sabnzbd.service
 fi
 
@@ -115,8 +116,6 @@ fi
 cd /
 rm -rf /tmp/*
 
-##Update SAByenc
-pip install -q sabyenc --upgrade
 EOF
 
 #crontab 
@@ -127,7 +126,7 @@ rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 #Install prerequisites
 yum install -y epel-release
-yum install -y par2cmdline python-yenc python-cheetah wget tar git python-pip
+yum install -y par2cmdline python-yenc python-cheetah wget tar git python-pip unzip p7zip p7zip-plugins
 
 #Install RAR
 cd /tmp
@@ -140,6 +139,8 @@ cp ./unrar /usr/local/sbin/
 #Install pip upgrade sabyenc
 pip install --upgrade pip
 pip install -q sabyenc --upgrade
+pip install -q cheetah3
+pip install -q cryptography
 
 #Grab latest version of SAB
 cd /opt
