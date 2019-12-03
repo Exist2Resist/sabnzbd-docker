@@ -1,10 +1,5 @@
 #!/bin/bash
 #Script for SAB docker container.
-
-#Find the latest version of rar from website
-RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
-RAR=$(echo $RAR | awk -F'\">' '{print $1}')
-
 #Remove files that can cause issues with systemd
 cd /lib/systemd/system/sysinit.target.wants/ 
 for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done; \
@@ -16,11 +11,11 @@ rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
 rm -f /lib/systemd/system/basic.target.wants/*;\
 rm -f /lib/systemd/system/anaconda.target.wants/*;
 
-#CONFIGURATION SCRIPTS
-#Startup Script to Change UID and GUI in container
+##CONFIGURATION SCRIPTS
+##Startup Script to Change UID and GUI in container
 cat <<'EOT' > /usr/local/bin/start.sh
 #!/bin/bash
-TIMEZONE=${TZ:-America/Edmonton}
+TIMEZONE=${TMZN:-America/Edmonton}
 SYSTEMTZ=$(timedatectl | grep "Time zone" | awk -F':' '{ print $2 }' | awk -F'(' '{ print $1 }')
 
 if [[ $SYSTEMTZ != $TIMEZONE ]];then
@@ -35,11 +30,12 @@ usermod -u $USERID nobody
 usermod -g $USERID nobody
 usermod -d /home nobody
 chown -R nobody:users /config /opt/sabnzbd
+chmod -R 755 /config
 
 pip install -q sabyenc --upgrade
 EOT
 
-#Create Startup service for the above script
+##Create Startup service for the above script
 cat <<'EOT' > /etc/systemd/system/startup.service
 [Unit]
 Description=Startup Script that sets sab folder permissions.
@@ -54,7 +50,7 @@ TimeoutStartSec=0
 WantedBy=default.target
 EOT
 
-#service file
+##SABnzbd service file
 cat <<'EOT' > /etc/systemd/system/sabnzbd.service
 [Unit]
 Description=SABnzbd Daemon
@@ -70,7 +66,7 @@ GuessMainPID=no
 WantedBy=multi-user.target
 EOT
 
-#update script
+##Nightly update script
 cat <<'EOF' > /usr/local/bin/sabupdate.sh
 #!/bin/bash
 ##Get Updated RAR version
@@ -105,7 +101,7 @@ else
   cd /tmp
   wget -q $DOWNLOAD 
   tar -zxf $FILE
-  cd $FOLDER
+  cd /tmp/$FOLDER
   cp -ru ./* /opt/sabnzbd/
   chown -R nobody:users /opt/sabnzbd
   pip install -q sabyenc --upgrade
@@ -115,20 +111,23 @@ fi
 ##Cleanup
 cd /
 rm -rf /tmp/*
-
 EOF
 
-#crontab 
+##crontab 
 echo "0  0    * * *   root    /usr/local/bin/sabupdate.sh" >> /etc/crontab
 
-#Import KEY
+##Import KEY
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
-#Install prerequisites
+##Install prerequisites
 yum install -y epel-release
-yum install -y par2cmdline python-yenc python-cheetah wget tar git python-pip unzip p7zip p7zip-plugins
+yum install -y par2cmdline python-yenc python-cheetah wget tar python-pip unzip p7zip p7zip-plugins
 
-#Install RAR
+##Find the latest version of RAR
+RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
+RAR=$(echo $RAR | awk -F'\">' '{print $1}')
+
+##Install RAR
 cd /tmp
 wget -q https://rarlab.com/rar/$RAR
 tar -zxf $RAR
@@ -136,18 +135,27 @@ cd /tmp/rar
 cp ./rar /usr/local/sbin/
 cp ./unrar /usr/local/sbin/
 
-#Install pip upgrade sabyenc
+##Install pip upgrade sabyenc
 pip install --upgrade pip
 pip install -q sabyenc --upgrade
 pip install -q cheetah3
 pip install -q cryptography
 
+##Find latest version of SAB
+DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
+CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
+FOLDER="SABnzbd-$CURRENT"
+FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
+
 #Grab latest version of SAB
-cd /opt
-git clone https://github.com/sabnzbd/sabnzbd
-cd /opt/sabnzbd
-git checkout master
+cd /tmp
+wget -q $DOWNLOAD
+tar -zxf $FILE
+cd /tmp/$FOLDER
+mkdir /opt/sabnzbd/
+cp -ru ./* /opt/sabnzbd/
 chown -R nobody:users /opt/sabnzbd
+pip install -q sabyenc --upgrade
 python tools/make_mo.py
 
 #make config directory

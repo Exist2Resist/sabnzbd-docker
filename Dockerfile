@@ -1,5 +1,5 @@
 FROM centos:7
-MAINTAINER exist2resist
+MAINTAINER admin@dataadnstoragesolutions.com
 
 COPY ./install.sh /tmp/
 RUN chmod 755 /tmp/install.sh && /tmp/install.sh && rm -rf /tmp/*
