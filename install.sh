@@ -1,21 +1,9 @@
 #!/bin/bash
-#Script for SAB docker container.
-#Remove files that can cause issues with systemd
-cd /lib/systemd/system/sysinit.target.wants/ 
-for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done; \
-rm -f /lib/systemd/system/multi-user.target.wants/*;\
-rm -f /etc/systemd/system/*.wants/*;\
-rm -f /lib/systemd/system/local-fs.target.wants/*; \
-rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
-rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
-rm -f /lib/systemd/system/basic.target.wants/*;\
-rm -f /lib/systemd/system/anaconda.target.wants/*;
-
 ##CONFIGURATION SCRIPTS
 ##Startup Script to Change UID and GUI in container
 cat <<'EOT' > /usr/local/bin/start.sh
 #!/bin/bash
-TIMEZONE=${TMZN:-America/Edmonton}
+TIMEZONE=${TZ:-America/Edmonton}
 SYSTEMTZ=$(timedatectl | grep "Time zone" | awk -F':' '{ print $2 }' | awk -F'(' '{ print $1 }')
 
 if [[ $SYSTEMTZ != $TIMEZONE ]];then
@@ -165,6 +153,7 @@ chown -R nobody:users /config
 
 #Clean up
 cd /
+rm -rf /tmp/*
 yum clean all 
 
 #enable service
