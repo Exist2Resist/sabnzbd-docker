@@ -1,14 +1,17 @@
 #!/bin/bash
+#Set proper time zone
+rm -rf /etc/localtime
+ln -s /usr/share/zoneinfo/$TZ /etc/localt
+
 ##CONFIGURATION SCRIPTS
 ##Startup Script to Change UID and GUI in container
 cat <<'EOT' > /usr/local/bin/start.sh
 #!/bin/bash
-TIMEZONE=${TZ:-America/Edmonton}
-SYSTEMTZ=$(timedatectl | grep "Time zone" | awk -F':' '{ print $2 }' | awk -F'(' '{ print $1 }')
+#TIMEZONE=${TZ:-America/Edmonton}
+#SYSTEMTZ=$(timedatectl | grep "Time zone" | awk -F':' '{ print $2 }' | awk -F'(' '{ print $1 }')
 
-if [[ $SYSTEMTZ != $TIMEZONE ]];then
-	timedatectl set-timezone $TIMEZONE
-fi
+rm -rf /etc/localtime
+ln -s /usr/share/zoneinfo/$TZ /etc/localt
 
 USERID=${PUID:-99}
 GROUPID=${GUID:-100}
