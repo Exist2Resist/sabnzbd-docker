@@ -14,7 +14,7 @@ rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/$TZ /etc/localt
 
 USERID=${PUID:-99}
-GROUPID=${GUID:-100}
+GROUPID=${PGID:-100}
 
 groupmod -g $GROUPID users
 usermod -u $USERID nobody
