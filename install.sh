@@ -74,6 +74,8 @@ dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck &
 #Clone sabnzbd and install requirements
 cd /opt 
 git clone https://github.com/sabnzbd/sabnzbd.git
+cd /sabnzbd
+git checkout master
 pip3 install -r /opt/sabnzbd/requirements.txt -U
 
 ##Find the latest version of RAR
@@ -88,7 +90,8 @@ cd /tmp/rar
 cp ./rar /usr/local/sbin/
 cp ./unrar /usr/local/sbin/
 
-##Find latest version of SAB
+## Find latest version of SAB
+## Check in git repo under sabnzbd/sabnzbd/version.py/
 #DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
 #CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
 #FOLDER="SABnzbd-$CURRENT"

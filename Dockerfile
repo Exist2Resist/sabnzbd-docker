@@ -1,5 +1,5 @@
 FROM exist2resist/centos8:lite
-MAINTAINER admin@dataadnstoragesolutions.com
+LABEL maintainer="exist2resist@outlook.com"
 
 ENV TZ='America/Edmonton' PUID=99 PGID=100
 
