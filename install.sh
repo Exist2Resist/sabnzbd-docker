@@ -67,6 +67,7 @@ EOT
 #rpm gpg check is broken
 
 ##Install prerequisites
+
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
 dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
 
