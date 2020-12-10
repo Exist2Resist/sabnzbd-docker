@@ -111,8 +111,8 @@ echo "0  0    * * *   root    /usr/local/bin/sabupdate.sh" >> /etc/crontab
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
 
 ##Install prerequisites
-yum install -y epel-release
-yum install -y par2cmdline python-yenc python-cheetah wget tar python-pip unzip p7zip p7zip-plugins
+yum install -y epel-release && yum clean all -y
+yum install -y par2cmdline python-yenc python-cheetah wget tar python-pip unzip p7zip p7zip-plugins && yum clean all -y
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
@@ -157,7 +157,6 @@ chown -R nobody:users /config
 #Clean up
 cd /
 rm -rf /tmp/*
-yum clean all 
 
 #enable service
 systemctl enable startup.service
