@@ -74,9 +74,12 @@ dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck &
 #Clone sabnzbd and install requirements
 cd /opt 
 git clone https://github.com/sabnzbd/sabnzbd.git
-cd /sabnzbd
+cd /opt/sabnzbd
 git checkout master
 pip3 install -r /opt/sabnzbd/requirements.txt -U
+
+##Multi Language support
+python3 tools/make_mo.py
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
