@@ -1,7 +1,8 @@
 #!/bin/bash
 #Set proper time zone
 rm -rf /etc/localtime
-ln -s /usr/share/zoneinfo/$TZ /etc/localt
+ln -s /usr/share/zoneinfo/$TZ /etc/localtime
+#passes
 
 ##CONFIGURATION SCRIPTS
 ##Startup Script to Change UID and GUI in container
@@ -23,8 +24,9 @@ usermod -d /home nobody
 chown -R nobody:users /config /opt/sabnzbd
 chmod -R 755 /config
 
-pip install -q sabyenc --upgrade
+pip3 install -q sabyenc --upgrade
 EOT
+#passes
 
 ##Create Startup service for the above script
 cat <<'EOT' > /etc/systemd/system/startup.service
@@ -40,6 +42,7 @@ TimeoutStartSec=0
 [Install]
 WantedBy=default.target
 EOT
+#passes
 
 ##SABnzbd service file
 cat <<'EOT' > /etc/systemd/system/sabnzbd.service
@@ -50,69 +53,28 @@ Description=SABnzbd Daemon
 Type=forking
 User=nobody
 Group=users
-ExecStart=/usr/bin/python /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/sabnzbd_config.ini -s 0.0.0.0
+ExecStart=/usr/bin/python3 /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/sabnzbd_config.ini -s 0.0.0.0
 GuessMainPID=no
 
 [Install]
 WantedBy=multi-user.target
 EOT
-
-##Nightly update script
-cat <<'EOF' > /usr/local/bin/sabupdate.sh
-#!/bin/bash
-##Get Updated RAR version
-RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
-RAR=$(echo $RAR | awk -F'\">' '{print $1}')
-
-##Copy RAR
-cd /tmp
-wget -q https://rarlab.com/rar/$RAR
-tar -zxf $RAR
-cd /tmp/rar
-cp -f ./rar /usr/local/sbin/
-cp -f ./unrar /usr/local/sbin/
-
-##Update SAb
-##Check Local Version
-API=$(cat /config/sabnzbd.ini | grep ^api_key | awk '{print $3}')
-INSTALLED=$(curl --silent http://localhost:8080/api?mode=version&output=json&apikey=${API})
-
-##Check Online Version
-DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
-CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
-
-##Compare versions and update if necessary
-if [[ $CURRENT == $INSTALLED ]]; then
-  echo "Online Version matches installed version of SAB ignoring update."
-else
-  echo "Online Sab version is defferent, upgrading!"
-  systemctl stop sabnzbd.service
-  FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
-  FOLDER="SABnzbd-"$CURRENT
-  cd /tmp
-  wget -q $DOWNLOAD 
-  tar -zxf $FILE
-  cd /tmp/$FOLDER
-  cp -ru ./* /opt/sabnzbd/
-  chown -R nobody:users /opt/sabnzbd
-  pip install -q sabyenc --upgrade
-  systemctl start sabnzbd.service
-fi
-
-##Cleanup
-cd /
-rm -rf /tmp/*
-EOF
-
-##crontab 
-echo "0  0    * * *   root    /usr/local/bin/sabupdate.sh" >> /etc/crontab
+#passes
 
 ##Import KEY
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+#curl https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
+#rpm --import /etc/pki/rpm-gpg/*
+#rpm gpg check is broken
 
 ##Install prerequisites
-yum install -y epel-release && yum clean all -y
-yum install -y par2cmdline python-yenc python-cheetah wget tar python-pip unzip p7zip p7zip-plugins && yum clean all -y
+
+dnf install -y epel-release --nogpgcheck && dnf clean all -y
+dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
+
+#Clone sabnzbd and install requirements
+cd /opt 
+git clone https://github.com/sabnzbd/sabnzbd.git
+pip3 install -r /opt/sabnzbd/requirements.txt -U
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
@@ -126,28 +88,22 @@ cd /tmp/rar
 cp ./rar /usr/local/sbin/
 cp ./unrar /usr/local/sbin/
 
-##Install pip upgrade sabyenc
-pip install --upgrade pip
-pip install -q sabyenc --upgrade
-pip install -q cheetah3
-pip install -q cryptography
-
 ##Find latest version of SAB
-DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
-CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
-FOLDER="SABnzbd-$CURRENT"
-FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
+#DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
+#CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
+#FOLDER="SABnzbd-$CURRENT"
+#FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
 
 #Grab latest version of SAB
-cd /tmp
-wget -q $DOWNLOAD
-tar -zxf $FILE
-cd /tmp/$FOLDER
-mkdir /opt/sabnzbd/
-cp -ru ./* /opt/sabnzbd/
-chown -R nobody:users /opt/sabnzbd
-pip install -q sabyenc --upgrade
-python tools/make_mo.py
+#cd /tmp
+#wget -q $DOWNLOAD
+#tar -zxf $FILE
+#cd /tmp/$FOLDER
+#mkdir /opt/sabnzbd/
+#cp -ru ./* /opt/sabnzbd/
+#chown -R nobody:users /opt/sabnzbd
+#pip install -q sabyenc --upgrade
+#python tools/make_mo.py
 
 #make config directory
 mkdir -p /config

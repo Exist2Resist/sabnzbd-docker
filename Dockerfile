@@ -1,4 +1,4 @@
-FROM exist2resist/centos7
+FROM exist2resist/centos8:lite
 MAINTAINER admin@dataadnstoragesolutions.com
 
 ENV TZ='America/Edmonton' PUID=99 PGID=100
