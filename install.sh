@@ -91,7 +91,7 @@ cp ./rar /usr/local/sbin/
 cp ./unrar /usr/local/sbin/
 
 ## Find latest version of SAB
-## Check in git repo under sabnzbd/sabnzbd/version.py/
+## Check in git repo under /opt/sabnzbd/sabnzbd/version.py
 #DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
 #CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
 #FOLDER="SABnzbd-$CURRENT"
