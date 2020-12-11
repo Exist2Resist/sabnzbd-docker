@@ -19,7 +19,7 @@ GROUPID=${PGID:-100}
 
 groupmod -g $GROUPID users
 usermod -u $USERID nobody
-usermod -g $USERID nobody
+usermod -g $GROUPID nobody
 usermod -d /home nobody
 chown -R nobody:users /config /opt/sabnzbd
 chmod -R 755 /config
