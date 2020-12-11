@@ -36,6 +36,7 @@ Before=sabnzbd.service
 
 [Service]
 Type=simple
+User=root
 ExecStart=/usr/local/bin/start.sh
 TimeoutStartSec=0
 
