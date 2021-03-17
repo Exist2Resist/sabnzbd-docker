@@ -2,7 +2,6 @@
 #Set proper time zone
 rm -rf /etc/localtime
 ln -s /usr/share/zoneinfo/$TZ /etc/localtime
-#passes
 
 ##CONFIGURATION SCRIPTS
 ##Startup Script to Change UID and GUI in container
@@ -26,7 +25,6 @@ chmod -R 755 /config
 
 pip3 install -q sabyenc --upgrade
 EOT
-#passes
 
 ##Create Startup service for the above script
 cat <<'EOT' > /etc/systemd/system/startup.service
@@ -42,7 +40,6 @@ TimeoutStartSec=0
 [Install]
 WantedBy=default.target
 EOT
-#passes
 
 ##SABnzbd service file
 cat <<'EOT' > /etc/systemd/system/sabnzbd.service
@@ -59,7 +56,6 @@ GuessMainPID=no
 [Install]
 WantedBy=multi-user.target
 EOT
-#passes
 
 ##Import KEY
 #curl https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
@@ -84,18 +80,14 @@ RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64
 cd /tmp
 wget -q https://rarlab.com/rar/$RAR
 tar -zxf $RAR
-cd /tmp/rar
-cp ./rar /usr/local/sbin/
-cp ./unrar /usr/local/sbin/
+cp /tmp/rar/rar /usr/local/sbin/
+cp /tmp/rar/unrar /usr/local/sbin/
+rm -rf /tmp/*
 
 #make config directory
 mkdir -p /config
 chmod -R 755 /config /usr/local/bin
 chown -R nobody:users /config
-
-#Clean up
-cd /
-rm -rf /tmp/*
 
 #enable service
 systemctl enable startup.service
