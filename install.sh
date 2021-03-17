@@ -77,7 +77,7 @@ git clone https://github.com/sabnzbd/sabnzbd.git
 pip3 install -r /opt/sabnzbd/requirements.txt -U
 
 ##Find the latest version of RAR
-RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'NR==2 {print $1}')
+RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'END {print $1}')
 
 ##Install RAR
 cd /tmp
