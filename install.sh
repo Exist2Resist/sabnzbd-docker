@@ -35,7 +35,7 @@ ExecStart=/usr/local/bin/start.sh
 TimeoutStartSec=0
 
 [Install]
-WantedBy=default.target
+WantedBy=multi-user.target
 EOT
 
 ##SABnzbd service file
@@ -71,12 +71,12 @@ cd /opt
 git clone https://github.com/sabnzbd/sabnzbd.git
 cd /opt/sabnzbd
 git checkout master
-pip3 -m pip install --upgrade pip
-pip3 install -r /opt/sabnzbd/requirements.txt -U
+python3 -m pip install --upgrade pip
+python3 -m pip install -r /opt/sabnzbd/requirements.txt -U
 
 ##Multi Language support
 python3 tools/make_mo.py
-pip3 install -q sabyenc --upgrade
+python3 -m pip install -q sabyenc --upgrade
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'END {print $1}')
