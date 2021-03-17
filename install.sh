@@ -54,7 +54,6 @@ GuessMainPID=no
 [Install]
 WantedBy=multi-user.target
 EOT
-#passes
 
 ##Import KEY
 #curl https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
@@ -62,7 +61,6 @@ EOT
 #rpm gpg check is broken
 
 ##Install prerequisites
-
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
 dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
 
@@ -85,36 +83,14 @@ RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64
 cd /tmp
 wget -q https://rarlab.com/rar/$RAR
 tar -zxf $RAR
-cd /tmp/rar
-cp ./rar /usr/local/sbin/
-cp ./unrar /usr/local/sbin/
-
-## Find latest version of SAB
-## Check in git repo under /opt/sabnzbd/sabnzbd/version.py
-#DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
-#CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
-#FOLDER="SABnzbd-$CURRENT"
-#FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
-
-#Grab latest version of SAB
-#cd /tmp
-#wget -q $DOWNLOAD
-#tar -zxf $FILE
-#cd /tmp/$FOLDER
-#mkdir /opt/sabnzbd/
-#cp -ru ./* /opt/sabnzbd/
-#chown -R sabnzbd:users /opt/sabnzbd
-#pip install -q sabyenc --upgrade
-#python tools/make_mo.py
+cp /tmp/rar/rar /usr/local/sbin/
+cp /tmp/rar/unrar /usr/local/sbin/
+rm -rf /tmp/*
 
 #make config directory
 mkdir -p /config
-chown -R sabnzbd:users /config /opt/sabnzbd
-chmod -R 755 /config
-
-#Clean up
-cd /
-rm -rf /tmp/*
+chmod -R 755 /config /usr/local/bin
+chown -R nobody:users /config
 
 #enable service
 systemctl enable startup.service
