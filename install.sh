@@ -71,6 +71,7 @@ cd /opt
 git clone https://github.com/sabnzbd/sabnzbd.git
 cd /opt/sabnzbd
 git checkout master
+pip3 -m pip install --upgrade pip
 pip3 install -r /opt/sabnzbd/requirements.txt -U
 
 ##Multi Language support
