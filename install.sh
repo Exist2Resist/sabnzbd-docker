@@ -78,8 +78,7 @@ python3 tools/make_mo.py
 pip3 install -q sabyenc --upgrade
 
 ##Find the latest version of RAR
-RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ')
-RAR=$(echo $RAR | awk -F'\">' '{print $1}')
+RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'END {print $1}')
 
 ##Install RAR
 cd /tmp
