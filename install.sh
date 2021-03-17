@@ -46,7 +46,7 @@ After=startup.service
 Type=forking
 User=sabnzbd
 Group=users
-ExecStart=/usr/bin/python3 /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/config/sabnzbd_config.ini -s 0.0.0.0
+ExecStart=/usr/bin/python3 /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/sabnzbd_config.ini -s 0.0.0.0
 GuessMainPID=no
 
 [Install]
