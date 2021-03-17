@@ -18,8 +18,6 @@ usermod -u $PUID -g $PGID sabnzbd
 usermod -d /home sabnzbd
 chown -R sabnzbd:users /config /opt/sabnzbd
 chmod -R 755 /config
-
-pip3 install -q sabyenc --upgrade
 EOT
 chmod +x /usr/local/bin/start.sh
 
@@ -48,7 +46,7 @@ After=startup.service
 Type=forking
 User=sabnzbd
 Group=users
-ExecStart=/usr/bin/python3 /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/sabnzbd_config.ini -s 0.0.0.0
+ExecStart=/usr/bin/python3 /opt/sabnzbd/SABnzbd.py --daemon --config-file=/config/config/sabnzbd_config.ini -s 0.0.0.0
 GuessMainPID=no
 
 [Install]
@@ -74,7 +72,6 @@ python3 -m pip install -r /opt/sabnzbd/requirements.txt -U
 
 ##Multi Language support
 python3 tools/make_mo.py
-python3 -m pip install -q sabyenc --upgrade
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'END {print $1}')
