@@ -74,7 +74,8 @@ dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck &
 #Clone sabnzbd and install requirements
 cd /opt 
 git clone https://github.com/sabnzbd/sabnzbd.git
-pip3 install -r /opt/sabnzbd/requirements.txt -U
+python3 -m pip install --upgrade pip
+python3 -m pip install -r /opt/sabnzbd/requirements.txt -U
 
 ##Find the latest version of RAR
 RAR=$(curl -s https://www.rarlab.com/download.htm | awk -F'/rar/' '/rarlinux-x64/ { print $2 } ' | awk -F'\">' 'END {print $1}')
@@ -86,23 +87,6 @@ tar -zxf $RAR
 cd /tmp/rar
 cp ./rar /usr/local/sbin/
 cp ./unrar /usr/local/sbin/
-
-##Find latest version of SAB
-#DOWNLOAD=$(curl --silent https://sabnzbd.org/downloads 2>&1 | grep "Linux" | awk -F'"' '/download-link-src/ { print $4 } ')
-#CURRENT=$(echo $DOWNLOAD | awk -F'/' ' { print $8 } ')
-#FOLDER="SABnzbd-$CURRENT"
-#FILE=$(echo $DOWNLOAD | awk -F'/' ' { print $9 } ')
-
-#Grab latest version of SAB
-#cd /tmp
-#wget -q $DOWNLOAD
-#tar -zxf $FILE
-#cd /tmp/$FOLDER
-#mkdir /opt/sabnzbd/
-#cp -ru ./* /opt/sabnzbd/
-#chown -R nobody:users /opt/sabnzbd
-#pip install -q sabyenc --upgrade
-#python tools/make_mo.py
 
 #make config directory
 mkdir -p /config
