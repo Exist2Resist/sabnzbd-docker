@@ -1,4 +1,5 @@
-FROM exist2resist/centos8:lite
+#FROM exist2resist/centos8:lite
+FROM rockylinux:8
 LABEL maintainer="exist2resist@outlook.com"
 
 ENV TZ='America/Edmonton' PUID=99 PGID=100

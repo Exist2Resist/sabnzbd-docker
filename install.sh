@@ -53,14 +53,9 @@ GuessMainPID=no
 WantedBy=multi-user.target
 EOT
 
-##Import KEY
-#curl https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official -o /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-Official
-#rpm --import /etc/pki/rpm-gpg/*
-#rpm gpg check is broken
-
 ##Install prerequisites
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
-dnf install -y par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
+dnf install -y python39 par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
 
 #Clone sabnzbd and install requirements
 cd /opt 
@@ -83,6 +78,10 @@ tar -zxf $RAR
 cp /tmp/rar/rar /usr/local/sbin/
 cp /tmp/rar/unrar /usr/local/sbin/
 rm -rf /tmp/*
+
+# Get systemd
+wget https://raw.githubusercontent.com/gdraheim/docker-systemctl-replacement/master/files/docker/systemctl3.py -O /usr/local/bin/systemctl
+chmod 755 /usr/local/bin/systemctl
 
 #make config directory
 mkdir -p /config
