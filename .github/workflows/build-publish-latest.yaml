@@ -1,4 +1,4 @@
-name: Build and Publish to Development
+name: Build and Publish to Prod
 on: workflow_dispatch
 jobs:
   build-publish:
@@ -9,10 +9,11 @@ jobs:
       - name: Docker hub login
         run: docker login -p ${{ secrets.DOCKER_PASS }} -u ${{ secrets.DOCKER_USER }}
       - name: Build Container
-        run: docker build -t sabnzbd:devel .
+        run: docker build -t sabnzbd:latest .
       - name: Tag container
-        run: docker tag sabnzbd:devel "${{ secrets.DOCKER_USER }}/sabnzbd:development"
+        run: docker tag sabnzbd:latest "${{ secrets.DOCKER_USER }}/sabnzbd:latest"
       - name: Push container
-        run: docker push "${{ secrets.DOCKER_USER }}/sabnzbd:development"
+        run: docker push "${{ secrets.DOCKER_USER }}/sabnzbd:latest"
       - name: Docker logout
         run: docker logout
+
