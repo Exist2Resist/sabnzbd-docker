@@ -1,7 +1,7 @@
-name: Build and Publish
+name: Build and Publish to Development
 on: workflow_dispatch
 jobs:
-  build-publish-devel:
+  build-publish:
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
