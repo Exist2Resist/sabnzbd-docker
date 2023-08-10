@@ -11,7 +11,7 @@ jobs:
       - name: Build Container
         run: docker build -t sabnzbd:devel .
       - name: Tag container
-        run: docker tag sabnzbd:devel ${{ secrets.DOCKER_USER }}:development
+        run: docker tag sabnzbd:devel "${{ secrets.DOCKER_USER }}/sabnzbd:development"
       - name: Push container
-        run: docker push ${{ secrets.DOCKER_USER }}:development
+        run: docker push "${{ secrets.DOCKER_USER }}/sabnzbd:development"
 
