@@ -1,5 +1,5 @@
 name: Build and Publish to Development
-on: workflow_dispatch
+on: [push, workflow_dispatch]
 jobs:
   build-publish:
     runs-on: ubuntu-latest

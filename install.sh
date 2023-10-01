@@ -57,6 +57,17 @@ EOT
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
 dnf install -y python39 par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
 
+##Install par2cmdline-turbo
+git clone https://github.com/animetosho/par2cmdline-turbo.git
+cd par2cmdline-turbo
+aclocal
+automake --add-missing
+autoconf
+./configure
+make
+make install
+cd .. && rm -rf par2cmdline-turbo
+
 #Clone sabnzbd and install requirements
 cd /opt 
 git clone https://github.com/sabnzbd/sabnzbd.git
