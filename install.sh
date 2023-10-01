@@ -55,7 +55,8 @@ EOT
 
 ##Install prerequisites
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
-dnf install -y python39 par2cmdline automake wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
+dnf install -y python39 par2cmdline wget gcc git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
+dnf install groupinstall "Development Tools" -y && dnf clean all -y
 
 ##Install par2cmdline-turbo
 git clone https://github.com/animetosho/par2cmdline-turbo.git
