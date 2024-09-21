@@ -1,5 +1,9 @@
 name: Build and Publish to Development
-on: [push, workflow_dispatch]
+on: 
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 6 * * 3'
 jobs:
   build-publish:
     runs-on: ubuntu-latest
