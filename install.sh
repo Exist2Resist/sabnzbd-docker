@@ -72,10 +72,10 @@ dnf install -y python39 openssl par2cmdline automake make wget gcc gcc-c++ git p
 cd /tmp
 xz -dv /tmp/par2cmdline-turbo-v1.1.1-linux-amd64.xz
 chmod +x par2cmdline-turbo-v1.1.1-linux-amd64
-sudo mv /usr/bin/par2 /usr/bin/par2.old
-sudo cp par2cmdline-turbo-v1.1.1-linux-amd64 /usr/bin/par2
+mv /usr/bin/par2 /usr/bin/par2.old
+cp par2cmdline-turbo-v1.1.1-linux-amd64 /usr/bin/par2
 rm -f par2cmdline-turbo-v1.1.1-linux-amd64.xz par2cmdline-turbo-v1.1.1-linux-amd64
-par2 --version 
+par2 -V 
 
 ##Clone sabnzbd and install requirements
 cd /opt 
