@@ -5,7 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Docker hub login
         run: docker login -p ${{ secrets.DOCKER_PASS }} -u ${{ secrets.DOCKER_USER }}
       - name: Build Container
