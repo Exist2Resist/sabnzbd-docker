@@ -55,20 +55,26 @@ EOT
 
 ##Install prerequisites
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
-dnf install -y python39 openssl par2cmdline automake make wget gcc gcc-c++ git p7zip p7zip-plugins unzip --nogpgcheck && dnf clean all -y
+dnf install -y python39 openssl par2cmdline automake make wget gcc gcc-c++ git p7zip p7zip-plugins unzip xz --nogpgcheck && dnf clean all -y
 
 ##Install par2cmdline-turbo
-git clone https://github.com/animetosho/par2cmdline-turbo.git
-cd par2cmdline-turbo
-aclocal
-automake --add-missing
-autoconf
-./configure
-make
-make install
-cd .. && rm -rf par2cmdline-turbo
+# git clone https://github.com/animetosho/par2cmdline-turbo.git
+# cd par2cmdline-turbo
+# aclocal
+# automake --add-missing
+# autoconf
+# ./configure
+# make
+# make install
+# cd .. && rm -rf par2cmdline-turbo
+##Replace the git clone with direct binary installation
+xz -dv par2cmdline-turbo-v1.1.0-linux-amd64.xz
+chmod +x par2cmdline-turbo-v1.1.0-linux-amd64
+sudo mv /usr/bin/par2 /usr/bin/par2.old
+sudo cp par2cmdline-turbo-v1.1.0-linux-amd64 /usr/bin/par2
+par2 --version 
 
-#Clone sabnzbd and install requirements
+##Clone sabnzbd and install requirements
 cd /opt 
 git clone https://github.com/sabnzbd/sabnzbd.git
 cd /opt/sabnzbd

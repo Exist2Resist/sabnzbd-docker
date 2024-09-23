@@ -1,4 +1,3 @@
-#FROM exist2resist/centos8:lite
 FROM rockylinux:8
 LABEL maintainer="exist2resist@outlook.com"
 
