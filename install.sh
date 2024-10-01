@@ -57,6 +57,9 @@ EOT
 dnf install -y epel-release --nogpgcheck && dnf clean all -y
 dnf install -y python39 openssl par2cmdline automake make wget gcc gcc-c++ git p7zip p7zip-plugins unzip xz --nogpgcheck && dnf clean all -y
 
+##Check gcc version needs to be +9 for par2cmdline-turbo build to succees.
+echo $(gcc --version)
+
 ##Install par2cmdline-turbo
 # git clone https://github.com/animetosho/par2cmdline-turbo.git
 # cd par2cmdline-turbo
